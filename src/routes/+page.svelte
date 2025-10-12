@@ -30,6 +30,9 @@
 		<tr>
 			<th>Short URL</th>
 			<th>Long URL</th>
+			<th>Active?</th>
+			<th>Created At</th>
+			<th>Updated At</th>
 			<th>Delete?</th>
 		</tr>
 	</thead>
@@ -38,6 +41,14 @@
 			<tr>
 				<td>{url.shortCode}</td>
 				<td>{url.originalUrl}</td>
+				<td>
+					<form method="POST" action="?/toggleActive" use:enhance>
+						<input type="hidden" name="shortCode" value={url.shortCode} />
+						<button style="cursor: pointer" type="submit">{url.isActive}</button>
+					</form>
+				</td>
+				<td>{url.createdAt}</td>
+				<td>{url.updatedAt}</td>
 				<td>
 					<form method="POST" action="?/delete" use:enhance>
 						<input type="hidden" name="shortCode" value={url.shortCode} />

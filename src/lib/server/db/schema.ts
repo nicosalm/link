@@ -11,10 +11,10 @@ export const urls = sqliteTable(
 		isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
 		createdAt: text('created_at')
 			.notNull()
-			.default(sql`(CURRENT_TIMESTAMP)`),
+			.default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 		updatedAt: text('updated_at')
 			.notNull()
-			.default(sql`(CURRENT_TIMESTAMP)`),
+			.default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 		expiresAt: text('expires_at')
 	},
 	(table) => [index('short_code_idx').on(table.shortCode)]

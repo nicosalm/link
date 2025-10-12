@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
 	const [url] = await db.select().from(urls).where(eq(urls.shortCode, shortCode)).limit(1);
 
-	if (!url) {
+	if (!url || !url.isActive) {
 		return new Response('Short URL not found', { status: 404 });
 	}
 

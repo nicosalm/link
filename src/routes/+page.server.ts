@@ -97,5 +97,30 @@ export const actions = {
 			console.error('DB error:', error);
 			return { success: false, error: 'Failed to delete the URL' };
 		}
+	},
+	toggleActive: async ({ request }) => {
+		const data = await request.formData();
+		const shortCode = data.get('shortCode')?.toString();
+
+		if (!shortCode) {
+			return { success: false, error: 'Short code is required' };
+		}
+
+		try {
+			const [url] = await db.select().from(urls).where(eq(urls.shortCode, shortCode)).limit(1);
+
+			if (!url) {
+				return { success: false, error: 'URL not found' };
+			}
+
+			await db
+				.update(urls)
+				.set({ isActive: !url.isActive, updatedAt: new Date().toISOString() })
+				.where(eq(urls.shortCode, shortCode));
+			return { success: true, isActive: !url.isActive };
+		} catch (error) {
+			console.error('DB error: ', error);
+			return { success: false, error: 'Failed to toggle active status' };
+		}
 	}
 } satisfies Actions;
