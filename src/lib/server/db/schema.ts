@@ -19,3 +19,5 @@ export const urls = sqliteTable(
 	},
 	(table) => [index('short_code_idx').on(table.shortCode)]
 );
+
+export type Url = typeof urls.$inferSelect;
