@@ -15,9 +15,20 @@ export const actions = {
 		const data = await request.formData();
 		const originalUrl = data.get('originalUrl')?.toString();
 		const vanityUrl = data.get('vanityUrl')?.toString();
+		const expiryOption = data.get('expiryOption')?.toString();
+		const customExpiry = data.get('customExpiry')?.toString();
+		let expiresAt = null;
 
 		if (!originalUrl || originalUrl.trim() === '') {
 			return { success: false, error: 'Original URL is required' };
+		}
+
+		if (expiryOption === 'custom' && customExpiry) {
+			expiresAt = new Date(customExpiry).toISOString();
+		} else if (expiryOption && expiryOption !== '') {
+			const expiry = new Date();
+			expiry.setDate(expiry.getDate() + parseInt(expiryOption));
+			expiresAt = expiry.toISOString();
 		}
 
 		let normalizedUrl = originalUrl.trim();
@@ -55,11 +66,15 @@ export const actions = {
 					.limit(1);
 
 				if (existingUrl) {
-					return {
-						success: true,
-						shortUrl: existingUrl.shortCode,
-						fullUrl: `${new URL(request.url).origin}/${existingUrl.shortCode}`
-					};
+					if (existingUrl.expiresAt && new Date(existingUrl.expiresAt) > new Date()) {
+						await db.delete(urls).where(eq(urls.shortCode, existingUrl.shortCode));
+					} else {
+						return {
+							success: true,
+							shortUrl: existingUrl.shortCode,
+							fullUrl: `${new URL(request.url).origin}/${existingUrl.shortCode}`
+						};
+					}
 				}
 			}
 
@@ -68,7 +83,8 @@ export const actions = {
 				.values({
 					originalUrl: normalizedUrl,
 					shortCode,
-					isVanity
+					isVanity,
+					expiresAt
 				})
 				.returning();
 
