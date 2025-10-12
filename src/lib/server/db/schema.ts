@@ -5,21 +5,17 @@ export const urls = sqliteTable(
 	'urls',
 	{
 		id: integer('id').primaryKey({ autoIncrement: true }),
+		originalUrl: text('original_url').notNull(),
 		shortCode: text('short_code').notNull().unique(),
 		isVanity: integer('is_vanity', { mode: 'boolean' }).notNull().default(false),
-		originalUrl: text('original_url').notNull(),
-		title: text('title'),
-		description: text('description'),
-		userId: text('user_id'),
+		isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
 		createdAt: text('created_at')
 			.notNull()
 			.default(sql`(CURRENT_TIMESTAMP)`),
 		updatedAt: text('updated_at')
 			.notNull()
 			.default(sql`(CURRENT_TIMESTAMP)`),
-		expiresAt: text('expires_at'),
-		isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
-		clickCount: integer('click_count').notNull().default(0)
+		expiresAt: text('expires_at')
 	},
-	(table) => [index('short_code_idx').on(table.shortCode), index('user_id_idx').on(table.userId)]
+	(table) => [index('short_code_idx').on(table.shortCode)]
 );
