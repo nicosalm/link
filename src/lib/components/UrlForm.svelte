@@ -33,7 +33,7 @@
 			<input name="customExpiry" type="datetime-local" required />
 		</label>
 	{/if}
-	<button style="cursor: pointer">Generate Short URL</button>
+	<button class="cursor-pointer">Generate Short URL</button>
 </form>
 
 {#if form?.fullUrl}

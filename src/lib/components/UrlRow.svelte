@@ -10,7 +10,7 @@
 	<td>
 		<form method="POST" action="?/toggleActive" use:enhance>
 			<input type="hidden" name="shortCode" value={url.shortCode} />
-			<button style="cursor: pointer" type="submit">{url.isActive}</button>
+			<button class="cursor-pointer" type="submit">{url.isActive}</button>
 		</form>
 	</td>
 	<td>{url.expiresAt ?? 'Never'}</td>
@@ -20,7 +20,7 @@
 	<td>
 		<form method="POST" action="?/delete" use:enhance>
 			<input type="hidden" name="shortCode" value={url.shortCode} />
-			<button style="cursor: pointer" type="submit">[x]</button>
+			<button class="cursor-pointer" type="submit">[x]</button>
 		</form>
 	</td>
 </tr>

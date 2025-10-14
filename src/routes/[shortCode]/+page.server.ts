@@ -1,17 +1,17 @@
 import { db } from '$lib/server/db';
 import { urls } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import { redirect } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { error, redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 
-export const GET: RequestHandler = async ({ params }) => {
+export const load: PageServerLoad = async ({ params }) => {
 	const { shortCode } = params;
 
 	const [url] = await db.select().from(urls).where(eq(urls.shortCode, shortCode)).limit(1);
 
 	if (!url || !url.isActive) {
-		return new Response('Short URL not found', { status: 404 });
+		error(404, 'Short URL not found');
 	}
 
-	throw redirect(301, url.originalUrl);
+	redirect(301, url.originalUrl);
 };
