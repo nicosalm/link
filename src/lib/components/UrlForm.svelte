@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { ActionData } from '../../routes/$types';
+	import { createCopyState } from '$lib/utils/copy.svelte';
 
 	let { form }: { form: ActionData } = $props();
 	let expiryOption = $state('');
+	const copyState = createCopyState();
 </script>
 
 <form method="POST" action="?/create" use:enhance>
@@ -16,7 +18,7 @@
 		<input name="vanityUrl" type="text" />
 	</label>
 	<label>
-		Expiration (optional):
+		Expiration:
 		<select name="expiryOption" bind:value={expiryOption}>
 			<option value="">Never expires</option>
 			<option value="1">1 day</option>
@@ -33,12 +35,16 @@
 			<input name="customExpiry" type="datetime-local" required />
 		</label>
 	{/if}
-	<button class="cursor-pointer">Generate Short URL</button>
+	<button class="cursor-pointer bg-black px-4 py-[9px] text-white">Shorten</button>
 </form>
 
 {#if form?.fullUrl}
-	<p>Short URL created!</p>
-	<strong>{form.fullUrl}</strong>
+	<p>
+		Take this! -
+		<button onclick={() => copyState.copy(form.fullUrl)} class="cursor-pointer font-bold">
+			{copyState.copied ? 'Copied!' : form.fullUrl}
+		</button>
+	</p>
 {:else if form?.error}
 	<p>{form.error}</p>
 {/if}

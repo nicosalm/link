@@ -5,16 +5,16 @@
 	let { urls } = $props<{ urls: Url[] }>();
 </script>
 
-<table>
+<table class="w-full">
 	<thead>
-		<tr>
-			<th>Short URL</th>
-			<th>Active?</th>
-			<th>Expires At</th>
-			<th>Long URL</th>
-			<th>Created At</th>
-			<th>Updated At</th>
-			<th>Delete?</th>
+		<tr class="underline">
+			<th class="text-left">Short URL</th>
+			<th class="text-left">Active?</th>
+			<th class="text-left">Expires At</th>
+			<th class="text-left">Long URL</th>
+			<th class="text-left">Created At</th>
+			<th class="text-left">Updated At</th>
+			<th class="text-left">Delete?</th>
 		</tr>
 	</thead>
 	<tbody>
