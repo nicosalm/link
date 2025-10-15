@@ -4,8 +4,8 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev --port 8532",
-		"build": "vite build",
+		"dev": "COMMIT_HASH=$(git rev-parse HEAD) vite dev --port 8532",
+		"build": "COMMIT_HASH=$(git rev-parse HEAD) vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

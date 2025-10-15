@@ -47,7 +47,11 @@
 
 		<footer class="flex items-center justify-between">
 			<span
-				>created by <a class="underline" href="https://salm.dev/" target="_blank">Nico</a> !</span
+				>created by <a class="underline" href="https://salm.dev/" target="_blank">Nico</a>! (@<a
+					class="underline"
+					href="https://github.com/nicosalm/link/commit/{data.commitHash}"
+					target="_blank">{data.commitHash.substring(0, 7)}</a
+				>)</span
 			>
 			<div class="flex items-center gap-2">
 				{#if naviMessage}
