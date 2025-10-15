@@ -1,16 +1,56 @@
 import { db } from '$lib/server/db';
 import { urls } from '$lib/server/db/schema';
-import type { Actions } from './$types';
+import { fail } from '@sveltejs/kit';
+import bcrypt from 'bcrypt';
+import crypto from 'crypto';
+import type { Actions, PageServerLoad } from './$types';
 import { eq } from 'drizzle-orm';
+import { PASSWORD_HASH, sessions } from '../hooks.server';
 
-export const load = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
 	const allUrls = await db.select().from(urls);
 	return {
-		urls: allUrls
+		urls: allUrls,
+		authenticated: locals.authenticated
 	};
 };
 
 export const actions = {
+	login: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const password = data.get('password');
+
+		if (!password) {
+			return fail(400, { error: 'Password is required' });
+		}
+
+		const isValid = await bcrypt.compare(password.toString(), PASSWORD_HASH);
+
+		if (!isValid) {
+			return fail(401, { error: 'Invalid password' });
+		}
+
+		const sessionToken = crypto.randomBytes(32).toString('hex');
+		sessions.set(sessionToken, { createdAt: Date.now() });
+
+		cookies.set('session', sessionToken, {
+			path: '/',
+			httpOnly: true,
+			secure: true,
+			sameSite: 'strict',
+			maxAge: 60 * 60 * 24 * 7
+		});
+
+		return { success: true };
+	},
+	logout: async ({ cookies }) => {
+		const sessionToken = cookies.get('session');
+		if (sessionToken) {
+			sessions.delete(sessionToken);
+		}
+		cookies.delete('session', { path: '/' });
+		return { success: true };
+	},
 	create: async ({ request }) => {
 		const data = await request.formData();
 		const originalUrl = data.get('originalUrl')?.toString();
