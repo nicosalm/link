@@ -10,6 +10,7 @@ services:
       - DATABASE_URL=/app/data/prod.db
       - AUTH_PASSWORD=${AUTH_PASSWORD}
       - ORIGIN=${ORIGIN:-http://localhost:3000}
+      - COMMIT_HASH=${COMMIT_HASH:-dev}
     volumes:
       - ./data:/app/data
     restart: unless-stopped

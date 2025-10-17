@@ -1,7 +1,7 @@
-import { COMMIT_HASH } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 export async function load() {
 	return {
-		commitHash: COMMIT_HASH
+		commitHash: env.COMMIT_HASH || 'unknown'
 	};
 }

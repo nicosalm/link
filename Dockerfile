@@ -30,6 +30,8 @@ COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 USER nodejs
 EXPOSE 3000
 
+ARG COMMIT_HASH=unknown
 ENV NODE_ENV=production
+ENV COMMIT_HASH=${COMMIT_HASH}
 
 CMD ["node", "build"]
