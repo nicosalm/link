@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        COMMIT_HASH: ${COMMIT_HASH:-dev}
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - DATABASE_URL=/app/data/prod.db
+      - AUTH_PASSWORD=${AUTH_PASSWORD}
+      - ORIGIN=${ORIGIN:-http://localhost:3000}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

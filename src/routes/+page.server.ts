@@ -1,14 +1,14 @@
-import { db } from '$lib/server/db';
+import { getDb } from '$lib/server/db';
 import { urls } from '$lib/server/db/schema';
 import { fail } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import type { Actions, PageServerLoad } from './$types';
 import { eq } from 'drizzle-orm';
-import { PASSWORD_HASH, sessions } from '../hooks.server';
+import { getPasswordHash, sessions } from '../hooks.server';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	const allUrls = await db.select().from(urls);
+	const allUrls = await getDb().select().from(urls);
 	return {
 		urls: allUrls,
 		authenticated: locals.authenticated
@@ -24,7 +24,7 @@ export const actions = {
 			return fail(400, { error: 'Password is required' });
 		}
 
-		const isValid = await bcrypt.compare(password.toString(), PASSWORD_HASH);
+		const isValid = await bcrypt.compare(password.toString(), getPasswordHash());
 
 		if (!isValid) {
 			return fail(401, { error: 'Invalid password' });
@@ -89,7 +89,7 @@ export const actions = {
 
 		try {
 			if (isVanity) {
-				const [existingVanity] = await db
+				const [existingVanity] = await getDb()
 					.select()
 					.from(urls)
 					.where(eq(urls.shortCode, shortCode))
@@ -99,7 +99,7 @@ export const actions = {
 					return { success: false, error: 'Vanity URL already taken!' };
 				}
 			} else {
-				const [existingUrl] = await db
+				const [existingUrl] = await getDb()
 					.select()
 					.from(urls)
 					.where(eq(urls.originalUrl, normalizedUrl))
@@ -107,7 +107,7 @@ export const actions = {
 
 				if (existingUrl) {
 					if (existingUrl.expiresAt && new Date(existingUrl.expiresAt) > new Date()) {
-						await db.delete(urls).where(eq(urls.shortCode, existingUrl.shortCode));
+						await getDb().delete(urls).where(eq(urls.shortCode, existingUrl.shortCode));
 					} else {
 						return {
 							success: true,
@@ -118,7 +118,7 @@ export const actions = {
 				}
 			}
 
-			const [newUrl] = await db
+			const [newUrl] = await getDb()
 				.insert(urls)
 				.values({
 					originalUrl: normalizedUrl,
@@ -147,7 +147,7 @@ export const actions = {
 		}
 
 		try {
-			await db.delete(urls).where(eq(urls.shortCode, shortCode));
+			await getDb().delete(urls).where(eq(urls.shortCode, shortCode));
 			return { success: true };
 		} catch (error) {
 			console.error('DB error:', error);
@@ -163,13 +163,13 @@ export const actions = {
 		}
 
 		try {
-			const [url] = await db.select().from(urls).where(eq(urls.shortCode, shortCode)).limit(1);
+			const [url] = await getDb().select().from(urls).where(eq(urls.shortCode, shortCode)).limit(1);
 
 			if (!url) {
 				return { success: false, error: 'URL not found' };
 			}
 
-			await db
+			await getDb()
 				.update(urls)
 				.set({ isActive: !url.isActive, updatedAt: new Date().toISOString() })
 				.where(eq(urls.shortCode, shortCode));

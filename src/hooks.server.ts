@@ -1,11 +1,19 @@
 import bcrypt from 'bcrypt';
-import { AUTH_PASSWORD } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import type { Handle } from '@sveltejs/kit';
 
-const PASSWORD_HASH = bcrypt.hashSync(AUTH_PASSWORD, 10);
+let PASSWORD_HASH: string;
+
+const getPasswordHash = () => {
+	if (!PASSWORD_HASH) {
+		PASSWORD_HASH = bcrypt.hashSync(env.AUTH_PASSWORD, 10);
+	}
+	return PASSWORD_HASH;
+};
+
 const sessions = new Map<string, { createdAt: number }>();
 
-export { PASSWORD_HASH, sessions };
+export { getPasswordHash, sessions };
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const sessionToken = event.cookies.get('session');

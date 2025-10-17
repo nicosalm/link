@@ -1,3 +1,0 @@
-- link expiry
-- link activation/deactivation
-- click count?
