@@ -31,7 +31,7 @@
 	<td>
 		<form method="POST" action="?/delete" use:enhance>
 			<input type="hidden" name="shortCode" value={url.shortCode} />
-			<button class="cursor-pointer" type="submit">[x]</button>
+			<button class="btn-delete cursor-pointer" type="submit">[x]</button>
 		</form>
 	</td>
 </tr>

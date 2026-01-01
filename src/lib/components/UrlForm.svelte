@@ -35,7 +35,7 @@
 			<input name="customExpiry" type="datetime-local" required />
 		</label>
 	{/if}
-	<button class="cursor-pointer bg-black px-4 py-[9px] text-white">Shorten</button>
+	<button type="submit" class="cursor-pointer bg-black px-4 py-[9px] text-white">Shorten</button>
 </form>
 
 {#if form?.fullUrl}

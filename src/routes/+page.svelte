@@ -7,7 +7,20 @@
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
 	let naviMessage = $state('');
-	const messages = ['Hey there', 'Hi'];
+	const messages = [
+		'Hey! Listen!',
+		'Watch out!',
+		'Look!',
+		'Hello!',
+		'Link shortened!',
+		"It's dangerous to go alone... take this URL!",
+		'Hey! You found me!',
+		'✨',
+		'*jingles*',
+		"I've been waiting...",
+		'Finally, some attention!',
+		"Don't forget about me!"
+	];
 
 	function handleNaviClick() {
 		naviMessage = messages[Math.floor(Math.random() * messages.length)];
