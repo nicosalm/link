@@ -31,4 +31,7 @@ ARG COMMIT_HASH=unknown
 ENV NODE_ENV=production
 ENV COMMIT_HASH=${COMMIT_HASH}
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+
 CMD ["node", "build"]
