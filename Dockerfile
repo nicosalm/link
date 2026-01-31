@@ -21,13 +21,10 @@ RUN pnpm build && pnpm prune --prod
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001 && \
-    mkdir -p /app/data && chown nodejs:nodejs /app/data
+RUN mkdir -p /app/data
 
-COPY --from=builder --chown=nodejs:nodejs /app/build ./build
-COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
-
-USER nodejs
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/node_modules ./node_modules
 EXPOSE 3000
 
 ARG COMMIT_HASH=unknown
