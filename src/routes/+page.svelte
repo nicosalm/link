@@ -22,11 +22,17 @@
 		"Don't forget about me!"
 	];
 
+	let naviMut = false;
+
 	function handleNaviClick() {
-		naviMessage = messages[Math.floor(Math.random() * messages.length)];
-		setTimeout(() => {
-			naviMessage = '';
-		}, 2000);
+		if (!naviMut) {
+			naviMut = true;
+			naviMessage = messages[Math.floor(Math.random() * messages.length)];
+			setTimeout(() => {
+				naviMessage = '';
+				naviMut = false;
+			}, 2000);
+		}
 	}
 </script>
 
